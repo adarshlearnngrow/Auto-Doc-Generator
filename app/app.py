@@ -3,7 +3,7 @@ import os
 import sys
 from pathlib import Path
 import traceback
-import pypandoc
+from docx import Document
 import subprocess
 from streamlit_mermaid import st_mermaid
 import shutil
