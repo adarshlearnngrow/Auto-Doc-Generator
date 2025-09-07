@@ -51,13 +51,45 @@ def collate_markdown_files(md_file_paths: list, output_file: str, title: str = "
 
 
 def convert_md_to_docx(source_md: str, output_docx: str):
-    with open(source_md, encoding="utf-8") as f:
-        content = f.read()
+    """
+    Converts a markdown file to a .docx Word document.
+    Uses mermaid-filter if available, otherwise falls back to plain pandoc.
+    """
 
-    doc = Document()
-    doc.add_paragraph(content)
-    doc.save(output_docx)
-    return output_docx
+    """ 
+    Locally it is working fine but on deployment its not
+    """
+    # First: explicit env var wins
+    # filter_executable = os.environ.get("MERMAID_FILTER")
+
+    # Second: look it up in PATH
+    if not filter_executable:
+        filter_executable = shutil.which("mermaid-filter")
+
+    # Third: Windows-specific path
+    if not filter_executable and sys.platform == "win32":
+        npm_prefix = os.path.expanduser(r"~\AppData\Roaming\npm")
+        candidate = os.path.join(npm_prefix, "mermaid-filter.cmd")
+        if os.path.exists(candidate):
+            filter_executable = candidate
+
+    # # Build pandoc args
+    extra_args = ['-s']
+    if filter_executable:
+        extra_args.extend(['--filter', filter_executable])
+        st.caption(f"Using mermaid-filter at: {filter_executable}")
+    else:
+        st.warning("⚠️ mermaid-filter not found — diagrams will remain as code blocks in the Word doc.")
+
+    try:
+        pypandoc.convert_file(source_md, 'docx',
+                              outputfile=output_docx,
+                              extra_args=extra_args)
+        return output_docx
+    except Exception as e:
+        st.error(f"Error during Word document conversion: {e}")
+        st.info("Check that Pandoc is installed and, if you want diagrams rendered, that mermaid-filter is installed or MERMAID_FILTER is set.")
+        return None
 
 
 # --- Streamlit App UI ---
