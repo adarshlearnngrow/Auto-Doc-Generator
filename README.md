@@ -90,7 +90,6 @@ flowchart LR
 │  ├─ sections.yaml
 │  ├─ .env                  # your API keys (not committed)
 ├─ requirements.txt
-└─ LICENSE
 ```
 
 ---
