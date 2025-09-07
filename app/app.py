@@ -140,7 +140,8 @@ if st.button("Generate Documentation", type="primary"):
                     # --- CHANGED: Use the error handler to forcefully remove the directory ---
                     shutil.rmtree(repo_path, onerror=handle_rmtree_error)
                     
-                os.rename(temp_repo_path_str, repo_path)
+                shutil.move(temp_repo_path_str, str(repo_path))
+
                 
                 st.session_state.repo_path = str(repo_path)
                 st.write(f"✅ Repository cloned to: `{repo_path}`")
