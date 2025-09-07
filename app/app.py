@@ -51,13 +51,19 @@ def collate_markdown_files(md_file_paths: list, output_file: str, title: str = "
 
 
 def convert_md_to_docx(source_md: str, output_docx: str):
-    with open(source_md, encoding="utf-8") as f:
-        content = f.read()
+    try:
+        with open(source_md, "r", encoding="utf-8") as f:
+            content = f.read()
 
-    doc = Document()
-    doc.add_paragraph(content)
-    doc.save(output_docx)
-    return output_docx
+        doc = DocxDocument()  # <-- use the python-docx alias
+        # simple block-by-block write; preserves blank lines
+        for line in content.splitlines():
+            doc.add_paragraph(line)
+        doc.save(output_docx)
+        return output_docx
+    except Exception as e:
+        st.error(f"Error during Word document conversion: {e}")
+        return None
 
 
 # --- Streamlit App UI ---
