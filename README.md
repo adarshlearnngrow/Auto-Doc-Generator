@@ -2,7 +2,6 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-blue)
-![Built with](https://img.shields.io/badge/built%20with-Python%20%2B%20Electron-ff69b4)
 ![Status](https://img.shields.io/badge/status-active-success)
 
 > Paste a GitHub URL → get a Word-ready, **evidence-cited** handover document.  
@@ -58,81 +57,6 @@ flowchart LR
 
 ---
 
-## 🖼️ UI Preview
-
-![App UI – Auto Doc Gen](./assets/ui-screenshot.png)
-
----
-
-## 🚀 Quick Start
-
-**Requirements**
-
-- **Python** 3.10+ (3.11 recommended)
-- **Node.js** 18+ (for the Electron UI)
-- Git
-- An embeddings/LLM API key (e.g., `OPENAI_API_KEY`)
-
-### 1) Clone
-
-```bash
-git clone https://github.com/<your-org-or-user>/<your-repo>.git
-cd <your-repo>
-````
-
-### 2) Python env + deps
-
-```bash
-# Windows
-python -m venv project_view
-project_view\Scripts\activate
-pip install -r requirements.txt
-
-# macOS/Linux
-python3 -m venv project_view
-source project_view/bin/activate
-pip install -r requirements.txt
-```
-
-### 3) Configure secrets
-
-Create `app/.env`:
-
-```env
-OPENAI_API_KEY=YOUR_KEY_HERE
-# Optional:
-# OPENAI_BASE_URL=...
-# GITHUB_TOKEN=...   # to access private repos or raise rate limits
-```
-
-### 4) UI deps (Electron) + Mermaid CLI
-
-```bash
-cd ui
-npm install
-# Mermaid CLI to render diagrams to images for Word:
-npm install --save-dev @mermaid-js/mermaid-cli
-```
-
-### 5) Run the Desktop App
-
-Ensure the UI uses your venv’s Python:
-
-```bash
-# Windows (PowerShell)
-$env:PYTHON="$PWD\..\project_view\Scripts\python.exe"; npm start
-
-# Windows (cmd)
-set PYTHON=%cd%\..\project_view\Scripts\python.exe
-npm start
-
-# macOS/Linux
-PYTHON="$PWD/../project_view/bin/python" npm start
-```
-
-Paste a GitHub URL, click **Generate**, watch logs, then **Save** the DOCX.
-
----
 
 ## 🧩 How It Works (High Level)
 
@@ -158,22 +82,14 @@ Paste a GitHub URL, click **Generate**, watch logs, then **Save** the DOCX.
 ```
 <your-repo>/
 ├─ app/
-│  ├─ main.py
+│  ├─ app.py
 │  ├─ imports.py
 │  ├─ chunking.py
 │  ├─ graph.py
 │  ├─ save_to_vector_db.py
 │  ├─ sections.yaml
 │  ├─ .env                  # your API keys (not committed)
-│  ├─ docs/                 # generated sections (Markdown)
-│  ├─ docs_index/           # FAISS stores (text_index/, code_index/)
-│  └─ debug/                # judge JSONs and run logs
-├─ ui/
-│  ├─ index.html
-│  ├─ preload.js
-│  └─ main.js               # spawns Python, Mermaid→PNG, DOCX export
 ├─ requirements.txt
-├─ package.json (in /ui)
 └─ LICENSE
 ```
 
@@ -201,24 +117,12 @@ Use these for quality gates (CI) or quick manual edits.
 
 ---
 
-## 🔧 Troubleshooting
 
-- **`ModuleNotFoundError: docx`**  
-  Install into the same venv used by Electron:  
-  `project_view\Scripts\python.exe -m pip install python-docx`
-
-- **UnicodeEncodeError on Windows**  
-  Ensure UTF-8: the UI already sets `PYTHONUTF8=1` / `PYTHONIOENCODING=utf-8`.
-
-- **Mermaid not rendered**  
-  Install `@mermaid-js/mermaid-cli` and ensure Chromium is available.
-
----
 
 ## 🛠 Tech Stack
 
-**Desktop & Glue**  
-Electron (Node + Chromium), `html-to-docx`, `@mermaid-js/mermaid-cli`
+**UI**  
+Streamlit
 
 **Python Pipeline**  
 LangChain / LangGraph, FAISS, GitPython, Tiktoken, (optional) `python-docx`
@@ -242,10 +146,6 @@ Your provider’s embeddings + LLM (configured in `app/.env`)
 
 ---
 
-## 📚 References (Background)
-
-- Naimi et al., _Automating Software Documentation_ (2024) — diagram-centric (UML → LLM) documentation.
-- Thota et al., _AI-Driven Automated Software Documentation Generation_ (ICDSNS 2024) — model comparison for snippet-level code→text.
 
 > Our system differs by mining the **entire repository** with **RAG + judge**, packaging a **Word-ready** handover with rendered diagrams.
 
