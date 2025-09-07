@@ -23,11 +23,14 @@ from langchain_core.documents import Document
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 from langchain_community.vectorstores import FAISS
 from dotenv import load_dotenv, find_dotenv
-
+import streamlit as st
 # Load variables from .env into process environment (e.g., OPENAI_API_KEY)
 # Use find_dotenv so it works even if the CWD is app/ or elsewhere
-_env_path = find_dotenv(usecwd=True)
-if _env_path:
-    load_dotenv(_env_path)
+# Try secrets first, fallback to env
+api_key = st.secrets.get("OPENAI_API_KEY", os.getenv("OPENAI_API_KEY"))
 
-client = OpenAI()
+if not api_key:
+    st.error("No OpenAI API key found. Please set in Streamlit secrets or environment.")
+else:
+    os.environ["OPENAI_API_KEY"] = api_key  # ensure downstream libs see it
+    client = OpenAI(api_key=api_key)
