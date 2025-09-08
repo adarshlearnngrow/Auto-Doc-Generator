@@ -95,7 +95,7 @@ def convert_md_to_docx(source_md: str, output_docx: str):
 # --- Streamlit App UI ---
 st.set_page_config(page_title="RepoDoc AI", layout="wide")
 st.title("🤖 RepoDoc AI: Automated Repository Documentation Generator")
-st.markdown("Enter a public GitHub repository URL to automatically generate technical documentation.")
+st.markdown("Enter a public GitHub repository URL to automatically generate technical documentation. Only python repo are supported as of now.")
 
 # Initialize session state variables
 if 'generation_complete' not in st.session_state:
