@@ -10,6 +10,6 @@ nbformat
 pandas
 python-docx
 tiktoken
-streamlit
+streamlit>=1.29.0
 streamlit-mermaid
 pypandoc
